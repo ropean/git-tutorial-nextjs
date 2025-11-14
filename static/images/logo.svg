@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <!-- 渐变定义 - 炫彩效果 -->
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 暗色模式渐变 -->
+    <linearGradient id="gradient-dark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b9dc3;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#9b7cb8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5b3fc;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Git 分支图标 -->
+  <g id="git-branches">
+    <!-- 主分支线 -->
+    <path d="M 15 30 L 45 30" stroke="url(#gradient1)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- 分支线 1 -->
+    <path d="M 25 30 Q 30 20, 45 15" stroke="url(#gradient2)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- 分支线 2 -->
+    <path d="M 35 30 Q 40 40, 50 45" stroke="url(#gradient3)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- 提交节点 -->
+    <circle cx="15" cy="30" r="4" fill="url(#gradient1)"/>
+    <circle cx="25" cy="30" r="4" fill="url(#gradient1)"/>
+    <circle cx="35" cy="30" r="4" fill="url(#gradient1)"/>
+    <circle cx="45" cy="30" r="4" fill="url(#gradient1)"/>
+
+    <!-- 分支节点 -->
+    <circle cx="45" cy="15" r="4" fill="url(#gradient2)"/>
+    <circle cx="50" cy="45" r="4" fill="url(#gradient3)"/>
+  </g>
+
+  <!-- 文字 "Git" -->
+  <text x="70" y="40" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="700" fill="url(#gradient1)">Git</text>
+
+  <!-- 副标题 "教程" -->
+  <text x="130" y="40" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#6b7280">教程</text>
+</svg>

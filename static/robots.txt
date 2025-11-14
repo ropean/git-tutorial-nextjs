@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://git.aceapp.dev/sitemap.xml
