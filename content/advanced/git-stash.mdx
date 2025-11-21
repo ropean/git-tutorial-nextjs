@@ -1,0 +1,129 @@
+---
+title: "Git Stash - 临时保存修改"
+description: "学习使用 git stash 临时保存工作进度，在不提交的情况下切换分支"
+category: "advanced"
+level: "进阶"
+duration: "15 分钟"
+tags: ["stash", "临时保存", "工作区"]
+date: "2024-01-09"
+---
+
+## 简介
+
+当你正在开发一个功能，突然需要切换到另一个分支修复紧急 bug，但当前的修改还没完成、不适合提交，这时 `git stash` 就派上用场了。
+
+**Stash** 的作用：临时保存工作目录和暂存区的修改，让工作区回到干净状态。
+
+## 基本使用
+
+### 保存当前修改
+
+```bash
+git stash
+```
+
+或带说明：
+
+```bash
+git stash save "正在开发的登录功能"
+```
+
+### 查看 stash 列表
+
+```bash
+git stash list
+```
+
+输出：
+
+```bash
+stash@{0}: WIP on feature: 正在开发的登录功能
+stash@{1}: WIP on main: 之前的临时保存
+```
+
+### 恢复 stash
+
+```bash
+# 恢复最新的 stash
+git stash pop
+
+# 恢复指定的 stash
+git stash pop stash@{1}
+```
+
+`pop` 会应用 stash 并从列表中删除。
+
+### 应用但不删除
+
+```bash
+git stash apply
+```
+
+## 高级用法
+
+### 包含未跟踪的文件
+
+```bash
+git stash -u
+# 或
+git stash --include-untracked
+```
+
+### 包含被忽略的文件
+
+```bash
+git stash -a
+# 或
+git stash --all
+```
+
+### 创建分支
+
+```bash
+git stash branch new-feature
+```
+
+从 stash 创建新分支并应用修改。
+
+## 实战场景
+
+### 场景：紧急切换分支
+
+```bash
+# 当前在 feature 分支开发
+git stash save "功能开发到一半"
+
+# 切换到 main 修复 bug
+git checkout main
+# 修复 bug...
+git commit -m "修复紧急bug"
+
+# 回到 feature 继续开发
+git checkout feature
+git stash pop
+```
+
+### 场景：在多个分支间切换
+
+```bash
+# 保存当前工作
+git stash
+
+# 切换到其他分支工作
+git checkout other-branch
+# 做些修改...
+
+# 回来继续
+git checkout feature
+git stash pop
+```
+
+## 小结
+
+- `git stash` - 临时保存修改
+- `git stash list` - 查看列表
+- `git stash pop` - 恢复并删除
+- `git stash apply` - 恢复但保留
+- `git stash -u` - 包含未跟踪文件
+
+适用于需要快速切换上下文的场景！

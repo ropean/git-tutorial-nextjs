@@ -1,0 +1,480 @@
+---
+title: "安装并配置 Git"
+description: "学习如何在 Windows、Mac 和 Linux 上安装 Git，并完成基本配置"
+category: "beginner"
+level: "入门"
+duration: "15 分钟"
+tags: ["安装", "配置", "基础"]
+date: "2024-01-04"
+---
+
+## 简介
+
+在开始使用 Git 之前，我们需要先在电脑上安装并配置它。本教程将指导你完成 Git 的安装和基本配置。
+
+## 检查是否已安装
+
+首先，让我们检查你的电脑上是否已经安装了 Git。
+
+打开终端（Mac/Linux）或命令提示符（Windows），输入：
+
+```bash
+git --version
+```
+
+如果看到类似这样的输出，说明已经安装：
+
+```bash
+git version 2.40.0
+```
+
+如果显示 "command not found" 或错误信息，说明需要安装。
+
+## 安装 Git
+
+### Windows 安装
+
+#### 方法 1: 使用官方安装包（推荐）
+
+1. 访问 [https://git-scm.com/download/win](https://git-scm.com/download/win)
+2. 下载适合你系统的安装包（32 位或 64 位）
+3. 运行安装程序
+
+**安装选项推荐**：
+
+- **Adjusting your PATH environment**: 选择 "Git from the command line and also from 3rd-party software"
+- **Choosing the SSH executable**: 使用默认
+- **Choosing HTTPS transport backend**: 使用默认
+- **Configuring the line ending conversions**: 选择 "Checkout Windows-style, commit Unix-style line endings"
+- **Configuring the terminal emulator**: 选择 "Use MinTTY"
+- **Default editor**: 选择你熟悉的编辑器（推荐 VS Code）
+
+4. 安装完成后，打开 Git Bash 验证：
+
+```bash
+git --version
+```
+
+#### 方法 2: 使用包管理器
+
+如果你使用 **Chocolatey**：
+
+```bash
+choco install git
+```
+
+如果你使用 **Winget**：
+
+```bash
+winget install Git.Git
+```
+
+### Mac 安装
+
+#### 方法 1: 使用 Homebrew（推荐）
+
+如果你已经安装了 Homebrew：
+
+```bash
+brew install git
+```
+
+#### 方法 2: 使用官方安装包
+
+1. 访问 [https://git-scm.com/download/mac](https://git-scm.com/download/mac)
+2. 下载并运行安装包
+
+#### 方法 3: 通过 Xcode
+
+Mac 系统自带 Git（通过 Command Line Tools）：
+
+```bash
+xcode-select --install
+```
+
+### Linux 安装
+
+#### Debian/Ubuntu
+
+```bash
+sudo apt update
+sudo apt install git
+```
+
+#### Fedora
+
+```bash
+sudo dnf install git
+```
+
+#### CentOS/RHEL
+
+```bash
+sudo yum install git
+```
+
+#### Arch Linux
+
+```bash
+sudo pacman -S git
+```
+
+## 基本配置
+
+安装完成后，需要进行一些基本配置。
+
+### 配置用户信息
+
+Git 需要知道你是谁，这样在提交代码时可以记录作者信息。
+
+#### 设置用户名
+
+```bash
+git config --global user.name "你的姓名"
+```
+
+例如：
+
+```bash
+git config --global user.name "Zhang San"
+```
+
+#### 设置邮箱
+
+```bash
+git config --global user.email "your.email@example.com"
+```
+
+例如：
+
+```bash
+git config --global user.email "zhangsan@example.com"
+```
+
+💡 **提示**:
+- 使用 `--global` 参数表示全局配置，适用于所有仓库
+- 如果需要为特定项目设置不同的信息，在项目目录下去掉 `--global` 参数
+
+### 配置默认编辑器
+
+Git 在需要输入信息时会打开编辑器。设置你喜欢的编辑器：
+
+#### VS Code（推荐）
+
+```bash
+git config --global core.editor "code --wait"
+```
+
+#### Vim
+
+```bash
+git config --global core.editor "vim"
+```
+
+#### Nano
+
+```bash
+git config --global core.editor "nano"
+```
+
+#### Sublime Text
+
+```bash
+git config --global core.editor "subl -n -w"
+```
+
+### 配置默认分支名
+
+从 Git 2.28 开始，可以配置初始化仓库时的默认分支名：
+
+```bash
+git config --global init.defaultBranch main
+```
+
+💡 以前默认是 `master`，现在业界推荐使用 `main`
+
+### 其他有用的配置
+
+#### 启用颜色输出
+
+```bash
+git config --global color.ui auto
+```
+
+这会让 Git 的输出更容易阅读（不同类型的信息用不同颜色显示）。
+
+#### 配置别名
+
+为常用命令创建简短的别名：
+
+```bash
+# 状态
+git config --global alias.st status
+
+# 提交
+git config --global alias.co checkout
+
+# 分支
+git config --global alias.br branch
+
+# 提交
+git config --global alias.ci commit
+
+# 美化的日志
+git config --global alias.lg "log --graph --oneline --decorate --all"
+```
+
+现在你可以使用：
+
+```bash
+git st        # 代替 git status
+git co main   # 代替 git checkout main
+git lg        # 美化的日志
+```
+
+#### 配置行尾处理
+
+**Windows**:
+
+```bash
+git config --global core.autocrlf true
+```
+
+**Mac/Linux**:
+
+```bash
+git config --global core.autocrlf input
+```
+
+这确保跨平台协作时行尾字符的一致性。
+
+## 查看配置
+
+### 查看所有配置
+
+```bash
+git config --list
+```
+
+输出：
+
+```
+user.name=Zhang San
+user.email=zhangsan@example.com
+core.editor=code --wait
+init.defaultbranch=main
+color.ui=auto
+...
+```
+
+### 查看特定配置
+
+```bash
+git config user.name
+git config user.email
+```
+
+### 查看配置来源
+
+```bash
+git config --list --show-origin
+```
+
+这会显示每个配置来自哪个文件。
+
+## 配置文件位置
+
+Git 的配置存储在三个级别：
+
+### 1. 系统级别
+
+适用于所有用户和仓库：
+
+- **Windows**: `C:\Program Files\Git\etc\gitconfig`
+- **Mac/Linux**: `/etc/gitconfig`
+
+命令：`git config --system`
+
+### 2. 全局级别
+
+适用于当前用户的所有仓库：
+
+- **Windows**: `C:\Users\用户名\.gitconfig`
+- **Mac/Linux**: `~/.gitconfig`
+
+命令：`git config --global`（最常用）
+
+### 3. 仓库级别
+
+只适用于当前仓库：
+
+- 位置: `项目目录/.git/config`
+
+命令：`git config`（不带任何级别参数）
+
+💡 **优先级**: 仓库级别 > 全局级别 > 系统级别
+
+## 验证配置
+
+创建一个测试仓库来验证配置：
+
+```bash
+# 创建测试目录
+mkdir git-test
+cd git-test
+
+# 初始化仓库
+git init
+
+# 查看配置
+git config user.name
+git config user.email
+```
+
+## 常见问题
+
+### Q1: 如何修改已设置的配置？
+
+只需再次运行配置命令即可覆盖：
+
+```bash
+git config --global user.name "New Name"
+```
+
+### Q2: 如何删除某个配置？
+
+```bash
+git config --global --unset user.name
+```
+
+### Q3: 配置了但不生效？
+
+1. 检查是否使用了正确的级别（`--global`、`--system`）
+2. 查看配置优先级，仓库级别会覆盖全局级别
+3. 确认配置文件没有语法错误
+
+### Q4: 忘记设置用户信息会怎样？
+
+首次提交时 Git 会提示错误，要求你设置 `user.name` 和 `user.email`。
+
+## 推荐的完整配置
+
+这是一套推荐的初始配置：
+
+```bash
+# 用户信息
+git config --global user.name "你的名字"
+git config --global user.email "your@email.com"
+
+# 默认编辑器
+git config --global core.editor "code --wait"
+
+# 默认分支名
+git config --global init.defaultBranch main
+
+# 启用颜色
+git config --global color.ui auto
+
+# 行尾处理 (Windows)
+git config --global core.autocrlf true
+
+# 行尾处理 (Mac/Linux)
+git config --global core.autocrlf input
+
+# 常用别名
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.lg "log --graph --oneline --decorate --all"
+
+# 拉取时使用 rebase
+git config --global pull.rebase true
+
+# 推送时只推送当前分支
+git config --global push.default simple
+```
+
+## 高级配置（可选）
+
+### 配置 SSH
+
+如果你要使用 SSH 连接 GitHub/GitLab：
+
+```bash
+# 生成 SSH 密钥
+ssh-keygen -t ed25519 -C "your@email.com"
+
+# 启动 ssh-agent
+eval "$(ssh-agent -s)"
+
+# 添加密钥
+ssh-add ~/.ssh/id_ed25519
+
+# 复制公钥（然后添加到 GitHub）
+cat ~/.ssh/id_ed25519.pub
+```
+
+### 配置凭据存储
+
+避免每次都输入密码：
+
+**Windows**:
+
+```bash
+git config --global credential.helper wincred
+```
+
+**Mac**:
+
+```bash
+git config --global credential.helper osxkeychain
+```
+
+**Linux**:
+
+```bash
+git config --global credential.helper store
+```
+
+## 卸载 Git（如果需要）
+
+### Windows
+
+通过控制面板 > 程序和功能 > 卸载
+
+### Mac
+
+```bash
+brew uninstall git
+```
+
+### Linux
+
+```bash
+sudo apt remove git  # Debian/Ubuntu
+sudo dnf remove git  # Fedora
+```
+
+## 小结
+
+今天我们学习了：
+
+- ✅ 在不同操作系统上安装 Git
+- ✅ 配置用户名和邮箱
+- ✅ 设置编辑器和其他选项
+- ✅ 创建有用的别名
+- ✅ 理解配置文件的层级
+- ✅ 验证和管理配置
+
+这些是使用 Git 的基础。正确的配置会让你的 Git 使用体验更加流畅！
+
+## 下一步
+
+现在你已经安装并配置好了 Git，准备好：
+
+1. [创建你的第一个 Git 仓库](/tutorials/beginner/first-repository)
+2. [学习基本的 Git 工作流](/tutorials/beginner/basic-commands)
+3. [开始版本控制之旅](/tutorials/beginner/what-is-git)
+
+开始你的 Git 之旅吧！🚀

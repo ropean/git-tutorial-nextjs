@@ -1,0 +1,472 @@
+---
+title: "撤销操作 - 让时光倒流"
+description: "学习如何撤销 Git 中的各种操作：修改、暂存、提交，掌握 reset、revert 和 checkout 命令"
+category: "beginner"
+level: "入门"
+duration: "20 分钟"
+tags: ["撤销", "reset", "revert", "恢复"]
+date: "2024-01-07"
+---
+
+## 简介
+
+在 Git 中，几乎所有操作都可以撤销。无论是修改了文件、添加到暂存区，还是已经提交，Git 都能帮你"反悔"。
+
+本教程将教你如何安全地撤销各种操作。
+
+## 三种主要的撤销情况
+
+```
+工作区修改 → 暂存区 → 本地仓库 → 远程仓库
+   ↓          ↓         ↓          ↓
+撤销修改   取消暂存   撤销提交   回退推送
+```
+
+## 1. 撤销工作区的修改
+
+### 场景：还没 add，想放弃修改
+
+```bash
+# 查看状态
+git status
+# 输出：modified: file.txt
+
+# 撤销单个文件的修改
+git checkout -- file.txt
+
+# 或使用新命令（Git 2.23+）
+git restore file.txt
+```
+
+⚠️ **警告**：这会永久删除工作区的修改，无法恢复！
+
+### 撤销所有修改
+
+```bash
+git checkout -- .
+# 或
+git restore .
+```
+
+### 实例演示
+
+```bash
+# 修改文件
+echo "错误的内容" >> README.md
+
+# 查看状态
+git status
+# modified: README.md
+
+# 撤销修改
+git restore README.md
+
+# 验证
+git status
+# nothing to commit, working tree clean
+```
+
+## 2. 取消暂存（已 add 但未 commit）
+
+### 场景：不小心 add 了不该提交的文件
+
+```bash
+# 取消暂存单个文件
+git reset HEAD file.txt
+
+# 或使用新命令
+git restore --staged file.txt
+```
+
+文件回到工作区，修改内容还在。
+
+### 取消所有暂存
+
+```bash
+git reset HEAD
+# 或
+git restore --staged .
+```
+
+### 实例演示
+
+```bash
+# 修改并添加
+echo "test" > test.txt
+git add test.txt
+
+# 查看状态
+git status
+# Changes to be committed: new file: test.txt
+
+# 取消暂存
+git restore --staged test.txt
+
+# 验证
+git status
+# Untracked files: test.txt
+```
+
+## 3. 撤销提交（已 commit）
+
+### 修改最后一次提交
+
+#### 场景 1：提交信息写错了
+
+```bash
+git commit --amend -m "正确的提交信息"
+```
+
+#### 场景 2：忘记添加文件
+
+```bash
+# 添加遗漏的文件
+git add forgotten-file.txt
+
+# 修正提交（不会产生新的提交）
+git commit --amend --no-edit
+```
+
+`--no-edit` 表示不修改提交信息。
+
+⚠️ **注意**：`--amend` 会改变提交的 SHA-1 哈希，不要修改已推送的提交！
+
+### 回退到之前的提交（reset）
+
+`git reset` 有三种模式：
+
+#### 1. soft - 保留修改在暂存区
+
+```bash
+git reset --soft HEAD~1
+```
+
+- 撤销提交
+- 修改保留在暂存区
+- 可以重新提交
+
+**使用场景**：想重新组织提交内容
+
+#### 2. mixed（默认）- 保留修改在工作区
+
+```bash
+git reset HEAD~1
+# 等同于
+git reset --mixed HEAD~1
+```
+
+- 撤销提交
+- 撤销暂存
+- 修改保留在工作区
+
+**使用场景**：想重新整理要提交的文件
+
+#### 3. hard - 完全删除修改
+
+```bash
+git reset --hard HEAD~1
+```
+
+- 撤销提交
+- 撤销暂存
+- **删除所有修改**
+
+⚠️ **危险操作**：会永久删除修改，谨慎使用！
+
+**使用场景**：确定要完全放弃最近的提交
+
+### 回退多个提交
+
+```bash
+# 回退 3 个提交
+git reset --hard HEAD~3
+
+# 回退到特定提交
+git reset --hard abc123
+```
+
+### HEAD 的含义
+
+- `HEAD` - 当前提交
+- `HEAD~1` - 上一个提交
+- `HEAD~2` - 上上个提交
+- `HEAD^^^` - 上上上个提交（三个 ^）
+
+### reset 对比
+
+| 模式 | HEAD | 暂存区 | 工作区 |
+|------|------|--------|--------|
+| soft | 移动 | 不变 | 不变 |
+| mixed | 移动 | 重置 | 不变 |
+| hard | 移动 | 重置 | 重置 |
+
+## 4. 安全撤销提交（revert）
+
+### revert vs reset
+
+| | reset | revert |
+|-|-------|--------|
+| 历史 | 删除提交 | 创建新提交 |
+| 安全性 | 不安全 | 安全 |
+| 适用 | 本地未推送 | 已推送的提交 |
+
+### 使用 revert
+
+```bash
+# 撤销某个提交
+git revert abc123
+
+# 撤销最近一个提交
+git revert HEAD
+```
+
+Git 会创建一个新的提交，内容是撤销指定提交的修改。
+
+### 实例演示
+
+```bash
+# 提交历史
+git log --oneline
+# c3 添加登录功能
+# c2 添加导航栏
+# c1 初始化项目
+
+# 撤销 c3
+git revert c3
+
+# 新的历史
+git log --oneline
+# c4 Revert "添加登录功能"  ← 新提交
+# c3 添加登录功能
+# c2 添加导航栏
+# c1 初始化项目
+```
+
+### 撤销多个提交
+
+```bash
+# 撤销一系列提交
+git revert HEAD~3..HEAD
+
+# 或逐个撤销
+git revert HEAD
+git revert HEAD~1
+git revert HEAD~2
+```
+
+## 5. 恢复已删除的文件
+
+### 恢复工作区删除的文件
+
+```bash
+git restore deleted-file.txt
+```
+
+### 恢复已提交后删除的文件
+
+```bash
+# 查找文件最后存在的提交
+git log -- deleted-file.txt
+
+# 从那个提交恢复
+git checkout abc123 -- deleted-file.txt
+```
+
+## 6. 找回"丢失"的提交
+
+### 使用 reflog
+
+```bash
+# 查看所有操作历史
+git reflog
+```
+
+输出：
+
+```bash
+abc123 (HEAD) HEAD@{0}: reset: moving to HEAD~1
+def456 HEAD@{1}: commit: 添加新功能
+ghi789 HEAD@{2}: commit: 修复 bug
+```
+
+### 恢复提交
+
+```bash
+# 回到某个状态
+git reset --hard HEAD@{1}
+
+# 或使用提交哈希
+git reset --hard def456
+```
+
+**reflog 保存时间**：默认 90 天
+
+## 7. 撤销已推送的提交
+
+### 方法 1：使用 revert（推荐）
+
+```bash
+git revert HEAD
+git push
+```
+
+安全，不会影响其他人。
+
+### 方法 2：强制推送（不推荐）
+
+```bash
+git reset --hard HEAD~1
+git push --force
+```
+
+⚠️ **危险**：
+- 会删除远程历史
+- 会影响其他协作者
+- 可能导致他人的工作丢失
+
+**只在以下情况使用**：
+- 个人分支
+- 确定没有其他人拉取过
+- 提交了敏感信息（密码、密钥）
+
+## 实战场景
+
+### 场景 1：提交了敏感信息
+
+```bash
+# 立即回退
+git reset --hard HEAD~1
+
+# 强制推送（如果已推送）
+git push --force
+
+# 修改文件，正确提交
+git add .
+git commit -m "正确的提交"
+git push
+```
+
+### 场景 2：提交到错误的分支
+
+```bash
+# 在 main 分支上
+git log --oneline -1
+# abc123 新功能（应该在 feature 分支）
+
+# 创建新分支保存这个提交
+git branch feature
+
+# 回退 main
+git reset --hard HEAD~1
+
+# 切换到 feature 分支
+git checkout feature
+```
+
+### 场景 3：合并了错误的分支
+
+```bash
+# 查看合并提交
+git log --oneline --graph
+
+# 回退合并
+git reset --hard HEAD~1
+```
+
+### 场景 4：多个提交都有问题
+
+```bash
+# 回退到干净的提交
+git reset --hard abc123
+
+# 或使用 rebase 交互式删除
+git rebase -i HEAD~5
+```
+
+## 决策树
+
+```
+需要撤销？
+│
+├─ 还没 add
+│  └─ git restore 文件名
+│
+├─ 已 add 但没 commit
+│  └─ git restore --staged 文件名
+│
+├─ 已 commit 但没 push
+│  ├─ 只想改提交信息
+│  │  └─ git commit --amend
+│  ├─ 想保留修改
+│  │  └─ git reset --soft HEAD~1
+│  └─ 想放弃修改
+│     └─ git reset --hard HEAD~1
+│
+└─ 已 push
+   ├─ 团队协作
+   │  └─ git revert
+   └─ 个人分支
+      └─ git reset + git push --force
+```
+
+## 常见错误
+
+### 错误 1：reset hard 后想找回
+
+```bash
+# 查看历史
+git reflog
+
+# 恢复
+git reset --hard HEAD@{1}
+```
+
+### 错误 2：revert 产生冲突
+
+```bash
+# 解决冲突后
+git add .
+git revert --continue
+
+# 或放弃 revert
+git revert --abort
+```
+
+## 最佳实践
+
+1. **提交前检查**: 使用 `git status` 和 `git diff`
+2. **小步提交**: 每次提交一个功能，便于撤销
+3. **测试后再推送**: 本地测试通过再 push
+4. **慎用 force**: 避免 `git push --force`
+5. **定期备份**: 重要修改push到远程
+
+## 安全等级
+
+| 命令 | 安全性 | 可恢复性 |
+|------|--------|----------|
+| git restore | ⚠️ 低 | 不可恢复 |
+| git reset --soft | ✅ 高 | 可恢复 |
+| git reset --mixed | ✅ 高 | 可恢复 |
+| git reset --hard | ⚠️ 低 | reflog 90天内可恢复 |
+| git revert | ✅ 高 | 完全可恢复 |
+| git commit --amend | ⚠️ 中 | reflog 可恢复 |
+
+## 小结
+
+- `git restore` - 撤销工作区修改
+- `git restore --staged` - 取消暂存
+- `git commit --amend` - 修改最后一次提交
+- `git reset` - 回退提交（本地）
+  - `--soft` - 保留在暂存区
+  - `--mixed` - 保留在工作区
+  - `--hard` - 完全删除
+- `git revert` - 安全撤销（已推送）
+- `git reflog` - 找回丢失的提交
+
+记住：**撤销前先思考，不确定就先备份！**
+
+## 下一步
+
+- [理解 Git 分支](/tutorials/beginner/branch-basics)
+- [远程仓库操作](/tutorials/beginner/remote-basics)
+- [Git 内部原理](/tutorials/advanced/git-internals)
