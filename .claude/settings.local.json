@@ -6,7 +6,15 @@
       "Bash(test:*)",
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
-      "Bash(npx opennextjs-cloudflare build:*)"
+      "Bash(npx opennextjs-cloudflare build:*)",
+      "Bash(ncu -u:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx @tailwindcss/upgrade@next)",
+      "Bash(npx @tailwindcss/upgrade@next:*)",
+      "Bash(timeout 15 pnpm dev:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm update:*)",
+      "Bash(find . -name \"*.json\" -type f -not -path \"./node_modules/*\" -not -path \"./.next/*\" -not -path \"./.open-next/*\" -not -path \"./.wrangler/*\" -exec sh -c 'if [ ! -s \"\"$1\"\" ]; then echo \"\"Empty: $1\"\"; elif ! jq empty \"\"$1\"\" 2>/dev/null; then echo \"\"Invalid: $1\"\"; fi' _ {} ;)"
     ],
     "deny": [],
     "ask": []
