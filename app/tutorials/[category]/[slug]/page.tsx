@@ -6,6 +6,7 @@ import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import remarkGfm from 'remark-gfm'
+import Comments from '@/components/Comments'
 import 'highlight.js/styles/github-dark.css'
 
 interface TutorialPageProps {
@@ -114,6 +115,9 @@ export default async function TutorialPage({ params }: TutorialPageProps) {
           </div>
         </div>
       </footer>
+
+      {/* Comments */}
+      <Comments />
     </article>
   )
 }

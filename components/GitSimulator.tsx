@@ -84,7 +84,7 @@ export default function GitSimulator() {
   ]
 
   const resetSimulator = () => {
-    git.reset()
+    git.resetSimulator()
     setOutput(['$ git init\nInitialized empty Git repository\n'])
     setFiles({})
     setHistory([])

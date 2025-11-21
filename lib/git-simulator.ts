@@ -220,13 +220,114 @@ export class GitSimulator {
       .join('\n')
   }
 
+  // 查看差异
+  diff(): string {
+    const lastCommit = this.getLastCommit()
+    let output = ''
+
+    for (const file in this.state.workingDirectory) {
+      const currentContent = this.state.workingDirectory[file]
+      const committedContent = lastCommit?.files[file]
+
+      if (!committedContent) {
+        output += `diff --git a/${file} b/${file}\n`
+        output += `new file\n`
+        output += `--- /dev/null\n`
+        output += `+++ b/${file}\n`
+        output += `+${currentContent}\n\n`
+      } else if (currentContent !== committedContent) {
+        output += `diff --git a/${file} b/${file}\n`
+        output += `--- a/${file}\n`
+        output += `+++ b/${file}\n`
+        output += `-${committedContent}\n`
+        output += `+${currentContent}\n\n`
+      }
+    }
+
+    return output || 'no changes detected'
+  }
+
+  // 合并分支
+  merge(branchName: string): string {
+    const targetBranch = this.state.branches.find(b => b.name === branchName)
+    if (!targetBranch) {
+      return `fatal: '${branchName}' does not name a commit`
+    }
+
+    if (branchName === this.state.currentBranch) {
+      return 'Already up to date.'
+    }
+
+    const targetCommit = this.state.commits.find(c => c.id === targetBranch.commitId)
+    if (!targetCommit) {
+      return `fatal: no commit found for branch '${branchName}'`
+    }
+
+    // 简单合并：将目标分支的文件合并到当前分支
+    const mergedFiles = {
+      ...this.state.workingDirectory,
+      ...targetCommit.files,
+    }
+
+    this.state.workingDirectory = mergedFiles
+    this.state.stagingArea = mergedFiles
+
+    const message = `Merge branch '${branchName}'`
+    return this.commit(message)
+  }
+
+  // 重置
+  reset(mode: string = '--mixed'): string {
+    if (mode === '--hard') {
+      // 硬重置：清空工作区和暂存区
+      this.state.stagingArea = {}
+      const lastCommit = this.getLastCommit()
+      if (lastCommit) {
+        this.state.workingDirectory = { ...lastCommit.files }
+      } else {
+        this.state.workingDirectory = {}
+      }
+      return 'HEAD is now at ' + (this.state.HEAD ? this.state.HEAD.substring(0, 7) : 'initial')
+    } else {
+      // 混合重置：只清空暂存区
+      this.state.stagingArea = {}
+      return 'Unstaged changes after reset'
+    }
+  }
+
+  // 删除文件
+  rm(filename: string): string {
+    if (!(filename in this.state.workingDirectory)) {
+      return `fatal: pathspec '${filename}' did not match any files`
+    }
+
+    delete this.state.workingDirectory[filename]
+    delete this.state.stagingArea[filename]
+
+    return `rm '${filename}'`
+  }
+
+  // 显示文件内容
+  show(filename: string): string {
+    if (filename in this.state.workingDirectory) {
+      return this.state.workingDirectory[filename]
+    }
+
+    const lastCommit = this.getLastCommit()
+    if (lastCommit && filename in lastCommit.files) {
+      return lastCommit.files[filename]
+    }
+
+    return `fatal: Path '${filename}' does not exist`
+  }
+
   // 获取当前状态
   getState(): GitState {
     return JSON.parse(JSON.stringify(this.state))
   }
 
-  // 重置状态
-  reset(): void {
+  // 重置模拟器状态
+  resetSimulator(): void {
     this.state = {
       workingDirectory: {},
       stagingArea: {},
@@ -284,6 +385,21 @@ export class GitSimulator {
 
         case 'checkout':
           return args.length > 0 ? this.checkout(args[0]) : 'error: missing branch name'
+
+        case 'diff':
+          return this.diff()
+
+        case 'merge':
+          return args.length > 0 ? this.merge(args[0]) : 'error: missing branch name'
+
+        case 'reset':
+          return this.reset(args[0] || '--mixed')
+
+        case 'rm':
+          return args.length > 0 ? this.rm(args[0]) : 'error: missing file name'
+
+        case 'show':
+          return args.length > 0 ? this.show(args[0]) : 'error: missing file name'
 
         default:
           return `git: '${cmd}' is not a git command. See 'git --help'.`

@@ -29,8 +29,13 @@ export default function PlaygroundPage() {
               <li><code>git add &lt;file&gt;</code> - 添加到暂存区</li>
               <li><code>git commit -m "message"</code> - 提交修改</li>
               <li><code>git log</code> - 查看历史</li>
+              <li><code>git diff</code> - 查看差异</li>
               <li><code>git branch &lt;name&gt;</code> - 创建分支</li>
               <li><code>git checkout &lt;branch&gt;</code> - 切换分支</li>
+              <li><code>git merge &lt;branch&gt;</code> - 合并分支</li>
+              <li><code>git reset [--hard]</code> - 重置</li>
+              <li><code>git rm &lt;file&gt;</code> - 删除文件</li>
+              <li><code>git show &lt;file&gt;</code> - 显示文件内容</li>
             </ul>
           </div>
 

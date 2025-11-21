@@ -197,8 +197,9 @@ MIT
 
 ## 联系方式
 
-- GitHub: [项目地址]
-- 问题反馈: [Issues]
+- 网站: [ropean.org](https://ropean.org)
+- GitHub: [https://github.com/ropean/git-tutorial](https://github.com/ropean/git-tutorial)
+- 问题反馈: [Issues](https://github.com/ropean/git-tutorial/issues)
 
 ---
 
