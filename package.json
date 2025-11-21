@@ -1,21 +1,23 @@
 {
-  "name": "git-tutorial-website",
+  "name": "git-tutorial",
   "version": "1.0.0",
   "description": "Professional Git tutorial website built with Next.js",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
   "keywords": [
     "git",
     "tutorial",
     "learning",
     "version-control"
   ],
-  "author": "",
   "license": "MIT",
+  "author": "",
+  "scripts": {
+    "build": "next build",
+    "export": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start",
+    "ship": "wrangler pages deploy out --project-name=git-tutorial --branch=main"
+  },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^24.10.1",
@@ -23,6 +25,7 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.22",
     "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
     "next": "^16.0.3",
     "next-mdx-remote": "^5.0.0",
     "postcss": "^8.5.6",

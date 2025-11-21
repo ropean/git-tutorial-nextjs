@@ -1,6 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { Metadata } from 'next'
-import { getTutorialBySlug, getTutorialSlugs } from '@/lib/mdx'
+import { getTutorialBySlug, getTutorialSlugs, getAllTutorials } from '@/lib/mdx'
 import { notFound } from 'next/navigation'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
@@ -13,6 +13,23 @@ interface TutorialPageProps {
     category: string
     slug: string
   }>
+}
+
+export function generateStaticParams() {
+  const categories = ['beginner', 'advanced', 'projects']
+  const params: { category: string; slug: string }[] = []
+
+  for (const category of categories) {
+    const tutorials = getAllTutorials(category)
+    for (const tutorial of tutorials) {
+      params.push({
+        category,
+        slug: tutorial.slug,
+      })
+    }
+  }
+
+  return params
 }
 
 export async function generateMetadata({ params }: TutorialPageProps): Promise<Metadata> {

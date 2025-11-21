@@ -233,7 +233,7 @@ git push origin main
 ### 本地运行
 
 ```bash
-cd git-tutorial-website
+cd git-tutorial
 
 # 安装依赖
 npm install

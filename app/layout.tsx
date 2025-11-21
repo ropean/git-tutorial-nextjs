@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   description: 'Master Git version control with our comprehensive, beginner-friendly tutorials and interactive exercises.',
   keywords: ['git', 'tutorial', 'version control', 'github', 'learning', 'programming'],
   authors: [{ name: 'Git Tutorial Team' }],
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',

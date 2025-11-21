@@ -17,7 +17,7 @@
 ## 项目结构
 
 ```
-git-tutorial-website/
+git-tutorial/
 ├── app/                    # Next.js App Router 页面
 │   ├── layout.tsx         # 根布局
 │   ├── page.tsx           # 首页

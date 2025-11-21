@@ -8,6 +8,14 @@ interface CategoryPageProps {
   }>
 }
 
+export function generateStaticParams() {
+  return [
+    { category: 'beginner' },
+    { category: 'advanced' },
+    { category: 'projects' },
+  ]
+}
+
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params
   const titles = {
