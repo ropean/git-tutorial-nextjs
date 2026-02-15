@@ -1,61 +1,67 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import { Metadata } from 'next'
-import { getTutorialBySlug, getTutorialSlugs, getAllTutorials } from '@/lib/mdx'
-import { notFound } from 'next/navigation'
-import rehypeHighlight from 'rehype-highlight'
-import rehypeSlug from 'rehype-slug'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import remarkGfm from 'remark-gfm'
-import Comments from '@/components/Comments'
-import 'highlight.js/styles/github-dark.css'
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import { Metadata } from 'next';
+import {
+  getTutorialBySlug,
+  getTutorialSlugs,
+  getAllTutorials,
+} from '@/lib/mdx';
+import { notFound } from 'next/navigation';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import remarkGfm from 'remark-gfm';
+// import Comments from '@/components/Comments'
+import 'highlight.js/styles/github-dark.css';
 
 interface TutorialPageProps {
   params: Promise<{
-    category: string
-    slug: string
-  }>
+    category: string;
+    slug: string;
+  }>;
 }
 
 export function generateStaticParams() {
-  const categories = ['beginner', 'advanced', 'projects']
-  const params: { category: string; slug: string }[] = []
+  const categories = ['beginner', 'advanced', 'projects'];
+  const params: { category: string; slug: string }[] = [];
 
   for (const category of categories) {
-    const tutorials = getAllTutorials(category)
+    const tutorials = getAllTutorials(category);
     for (const tutorial of tutorials) {
       params.push({
         category,
         slug: tutorial.slug,
-      })
+      });
     }
   }
 
-  return params
+  return params;
 }
 
-export async function generateMetadata({ params }: TutorialPageProps): Promise<Metadata> {
-  const { category, slug } = await params
-  const tutorial = getTutorialBySlug(category, slug)
+export async function generateMetadata({
+  params,
+}: TutorialPageProps): Promise<Metadata> {
+  const { category, slug } = await params;
+  const tutorial = getTutorialBySlug(category, slug);
 
   if (!tutorial) {
     return {
       title: 'Tutorial Not Found',
-    }
+    };
   }
 
   return {
     title: tutorial.frontmatter.title,
     description: tutorial.frontmatter.description,
     keywords: tutorial.frontmatter.tags,
-  }
+  };
 }
 
 export default async function TutorialPage({ params }: TutorialPageProps) {
-  const { category, slug } = await params
-  const tutorial = getTutorialBySlug(category, slug)
+  const { category, slug } = await params;
+  const tutorial = getTutorialBySlug(category, slug);
 
   if (!tutorial) {
-    notFound()
+    notFound();
   }
 
   const options = {
@@ -67,7 +73,7 @@ export default async function TutorialPage({ params }: TutorialPageProps) {
         [rehypeAutolinkHeadings, { behavior: 'wrap' }] as any,
       ],
     },
-  } as any
+  } as any;
 
   return (
     <article className="container mx-auto px-4 py-8 max-w-4xl">
@@ -83,7 +89,10 @@ export default async function TutorialPage({ params }: TutorialPageProps) {
           <span>⏱️ {tutorial.frontmatter.duration}</span>
           <span>📊 {tutorial.frontmatter.level}</span>
           {tutorial.frontmatter.date && (
-            <span>📅 {new Date(tutorial.frontmatter.date).toLocaleDateString('zh-CN')}</span>
+            <span>
+              📅{' '}
+              {new Date(tutorial.frontmatter.date).toLocaleDateString('zh-CN')}
+            </span>
           )}
         </div>
         {tutorial.frontmatter.tags && tutorial.frontmatter.tags.length > 0 && (
@@ -117,7 +126,7 @@ export default async function TutorialPage({ params }: TutorialPageProps) {
       </footer>
 
       {/* Comments */}
-      <Comments />
+      {/* <Comments /> */}
     </article>
-  )
+  );
 }
